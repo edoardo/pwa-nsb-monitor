@@ -9,11 +9,17 @@ class TrainRides extends Component {
     constructor(props) {
         super(props);
 
-        this.worker = new Worker('js/worker.js');
-        this.worker.addEventListener('message', e => {
+        this.worker = new SharedWorker('js/shared-worker.js');
+        this.worker.port.addEventListener('message', e => {
             const message = JSON.parse(e.data);
 
             switch (message.action) {
+                case 'registerClient':
+                    console.log('registerClient message', message);
+                    this.clientId = message.clientId;
+
+                    this.fetchRealTimeData();
+                    break;
                 case 'updateRealTime':
                     console.log('updateRealTime message', message);
                     const data = message.payload;
@@ -23,6 +29,7 @@ class TrainRides extends Component {
                     console.log('noop');
             }
         });
+        this.worker.port.start();
 
         this.state = {
             rides: []
@@ -30,16 +37,13 @@ class TrainRides extends Component {
     }
 
     fetchRealTimeData() {
-        this.worker.postMessage(JSON.stringify({
+        this.worker.port.postMessage(JSON.stringify({
             action: 'fetchRealTimeData',
+            clientId: this.clientId,
             stationId: this.props.stationId,
             originName: this.props.originName,
             destinationName: this.props.destinationName
         }));
-    }
-
-    componentWillMount() {
-        this.fetchRealTimeData();
     }
 
     render() {
