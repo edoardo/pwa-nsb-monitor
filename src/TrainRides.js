@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import CircularProgress from 'material-ui/CircularProgress';
 import { Table, TableBody } from 'material-ui/Table';
 import './TrainRides.css';
 
@@ -45,20 +46,32 @@ class TrainRides extends Component {
     }
 
     render() {
-        return (
-            <Table style={{tableLayout: 'auto'}}>
-                <TableBody>
-                {
-                    this.state.rides.map(ride =>
-                        <TrainRide
-                            key={ride.DatedVehicleJourneyRef}
-                            details={ride}
-                        />
-                    )
-                }
-                </TableBody>
-            </Table>
-        );
+        if (this.state.rides.length > 0) {
+            return (
+                <Table style={{tableLayout: 'auto'}}>
+                    <TableBody>
+                    {
+                        this.state.rides.map(ride =>
+                            <TrainRide
+                                key={ride.DatedVehicleJourneyRef}
+                                details={ride}
+                            />
+                        )
+                    }
+                    </TableBody>
+                </Table>
+            );
+        }
+        else {
+            return (
+                <CircularProgress
+                    color='#d52b1e'
+                    size={30}
+                    thickness={2.6}
+                    style={{margin: '1em 50%'}}
+                />
+            );
+        }
     }
 }
 
