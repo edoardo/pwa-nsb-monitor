@@ -49,10 +49,17 @@ const fetchRealTimeData = async (payload) => {
                 action: 'updateRealTime',
                 payload: rides
             }));
+
+            // for chaining
+            return payload;
         }
     })
     .catch(error => {
         console.error(`Fetch error for real time data for station ${ stationId } (${ error.message })`);
+    })
+    // enter loop
+    .then(payload => {
+        setTimeout(fetchRealTimeData, 60000, payload);
     });
 };
 
