@@ -32,9 +32,11 @@ class TrainRides extends Component {
     fetchRealTimeData() {
         this.worker.postMessage(JSON.stringify({
             action: 'fetchRealTimeData',
-            stationId: this.props.stationId,
-            originName: this.props.originName,
-            destinationName: this.props.destinationName
+            payload: {
+                stationId: this.props.stationId,
+                originName: this.props.originName,
+                destinationName: this.props.destinationName
+            }
         }));
     }
 

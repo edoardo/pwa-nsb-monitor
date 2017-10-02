@@ -1,4 +1,6 @@
-const fetchRealTimeData = async ({ stationId, originName, destinationName }) => {
+const fetchRealTimeData = async (payload) => {
+    const { stationId, originName, destinationName } = payload;
+
     const formData = new FormData();
     formData.append('ID', stationId);
 
@@ -57,7 +59,7 @@ const fetchRealTimeData = async ({ stationId, originName, destinationName }) => 
 const onMessage = async (message) => {
     switch (message.action) {
         case 'fetchRealTimeData':
-            await fetchRealTimeData(message);
+            await fetchRealTimeData(message.payload);
             break;
         default:
             console.log('noop');
