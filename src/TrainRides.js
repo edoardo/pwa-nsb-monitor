@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import CircularProgress from 'material-ui/CircularProgress';
-import { Table, TableBody } from 'material-ui/Table';
+import { List } from 'material-ui/List';
 import './TrainRides.css';
 
 import TrainRide from './TrainRide';
@@ -48,18 +48,16 @@ class TrainRides extends Component {
     render() {
         if (this.state.rides.length > 0) {
             return (
-                <Table style={{tableLayout: 'auto'}}>
-                    <TableBody>
-                    {
-                        this.state.rides.map(ride =>
-                            <TrainRide
-                                key={ride.DatedVehicleJourneyRef}
-                                details={ride}
-                            />
-                        )
-                    }
-                    </TableBody>
-                </Table>
+                <List>
+                {
+                    this.state.rides.map(ride =>
+                        <TrainRide
+                            key={ride.DatedVehicleJourneyRef}
+                            details={ride}
+                        />
+                    )
+                }
+                </List>
             );
         }
         else {
@@ -68,7 +66,7 @@ class TrainRides extends Component {
                     color='#d52b1e'
                     size={30}
                     thickness={2.6}
-                    style={{margin: '1em 50%'}}
+                    style={{margin: '1em 50%', left: -15}}
                 />
             );
         }
