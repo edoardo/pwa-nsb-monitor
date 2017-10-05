@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { ListItem } from 'material-ui/List';
 import AlertWarning from 'material-ui/svg-icons/alert/warning';
+import { yellow800, red500 } from 'material-ui/styles/colors';
 
 import './TrainRide.css';
 
@@ -19,19 +20,22 @@ class TrainRide extends Component {
         const details = this.props.details;
 
         let hasWarning = false;
+        let iconColor;
 
-        if (details.ExpectedDepartureTime !== details.AimedDepartureTime ||
-            (details.StopVisitNotePartOne + details.StopVisitNote).match(/(Innstilt|Cancelled)/)) {
+        if (details.ExpectedDepartureTime !== details.AimedDepartureTime) {
             hasWarning = true;
+            iconColor = yellow800;
+        }
+        else if ((details.StopVisitNotePartOne + details.StopVisitNote).match(/(Innstilt|Cancelled)/)) {
+            hasWarning = true;
+            iconColor = red500;
         }
 
         return (
             <ListItem
-                leftIcon={
-                    hasWarning ? <AlertWarning /> : undefined
-
+                rightIcon={
+                    hasWarning ? <AlertWarning color={iconColor} /> : undefined
                 }
-                insetChildren={true}
                 primaryText={
                     <div className="train-ride-line1">
                         <div className="spaced">
