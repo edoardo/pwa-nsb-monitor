@@ -7,8 +7,10 @@ class Main extends Component {
     constructor(props) {
         super(props);
 
+        const h = new Date().getHours();
+
         this.state = {
-            selectedTab: (new Date().getHours() > 12 ? 1 : 0),
+            selectedTab: ((h > 10 && h < 18) ? 1 : 0),
             stations: [{
                 key: 0,
                 id: '302e015dde84a2da8b779f16a00888a1e11783a4',
@@ -44,7 +46,12 @@ class Main extends Component {
                         label={station.name}
                         value={station.key}
                     >
-                        <TrainRides stationId={station.id} originName={station.originName} destinationName={station.destinationName} />
+                        <TrainRides
+                            stationId={station.id}
+                            stationName={station.name}
+                            originName={station.originName}
+                            destinationName={station.destinationName}
+                        />
                     </Tab>
                 )
             }
