@@ -35,6 +35,7 @@ class TrainRides extends Component {
             action: 'fetchRealTimeData',
             payload: {
                 stationId: this.props.stationId,
+                stationName: this.props.stationName,
                 originName: this.props.originName,
                 destinationName: this.props.destinationName
             }
