@@ -1,4 +1,4 @@
-const fetchRealTimeData = async (payload) => {
+const fetchRealTimeData = (payload) => {
     const { stationId, stationName, originName, destinationName } = payload;
 
     const formData = new FormData();
