@@ -40,6 +40,18 @@ time {
     border: .1em solid #000;
 }
 
+.L2 {
+    background-color: #64c8ff;
+    border-color: #64c8ff;
+    color: #000;
+}
+
+.L2x {
+    background-color: #fff;
+    border-color: #64c8ff;
+    color: #000;
+}
+
 .R11 {
     background-color: #a0001e;
     border-color: #a0001e;
