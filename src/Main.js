@@ -1,64 +1,15 @@
-import React, { Component } from 'react';
-import { Tabs, Tab } from 'material-ui/Tabs';
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
 
-import TrainRides from './TrainRides';
+import Home from './Home';
 
-class Main extends Component {
-    constructor(props) {
-        super(props);
-
-        const h = new Date().getHours();
-
-        this.state = {
-            selectedTab: ((h > 10 && h < 18) ? 1 : 0),
-            stations: [{
-                key: 0,
-                id: '302e015dde84a2da8b779f16a00888a1e11783a4',
-                name: 'Eidsvoll Verk',
-                originName: 'Eidsvoll',
-                destinationName: undefined
-            },
-            {
-                key: 1,
-                id: '441088887e8f9d98702a61c2da1d1cf353a1354e',
-                name: 'Nationaltheatret',
-                originName: undefined,
-                destinationName: 'Eidsvoll'
-            }]
-        };
-    }
-
-    handleChange = (value) => {
-        this.setState({ selectedTab: value });
-    };
-
-    render() {
-        return (
-            <main>
-            <Tabs
-                value={this.state.selectedTab}
-                onChange={this.handleChange}
-            >
-            {
-                this.state.stations.map(station =>
-                    <Tab
-                        key={station.key}
-                        label={station.name}
-                        value={station.key}
-                    >
-                        <TrainRides
-                            stationId={station.id}
-                            stationName={station.name}
-                            originName={station.originName}
-                            destinationName={station.destinationName}
-                        />
-                    </Tab>
-                )
-            }
-            </Tabs>
-            </main>
-        );
-    }
-}
+const Main = () => (
+    <main>
+        <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/station/:stationId" component={Home} />
+        </Switch>
+    </main>
+);
 
 export default Main;

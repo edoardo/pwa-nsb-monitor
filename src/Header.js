@@ -6,9 +6,13 @@ import SocialNotificationsOff from 'material-ui/svg-icons/social/notifications-o
 import SocialNotificationsNone from 'material-ui/svg-icons/social/notifications-none';
 
 class Header extends Component {
-    state = {
-        notificationsState: Notification.permission
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            notificationsState: Notification.permission
+        };
+    }
 
     handleRightIconClick = () => {
         const c = this;

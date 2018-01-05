@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { HashRouter as Router } from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
@@ -22,10 +23,14 @@ class App extends Component {
     render() {
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
-                <div>
-                    <Header/>
-                    <Main/>
-                </div>
+                <Router
+                    basename="/nsb-monitor/"
+                >
+                    <div>
+                        <Header/>
+                        <Main/>
+                    </div>
+                </Router>
             </MuiThemeProvider>
         );
     }
