@@ -2,13 +2,13 @@ const fetchRealTimeData = async (payload) => {
     const { stationId, stationName, origins, destinations } = payload;
 
     const params = new URLSearchParams();
-    params.append('MonitoringRef', stationId);
-    params.append('StopVisitTypes', 'departures');
-    params.append('MaximumStopVisits', 12);
+    params.set('MonitoringRef', stationId);
+    params.set('StopVisitTypes', 'departures');
+    params.set('MaximumStopVisits', 12);
 
     if (destinations.length === 1) {
-        params.append('DirectionRef', destinations[0]); // XXX TODO see how to handle multiple destinations, multiple fetch or filtering after?
-        params.append('MaximumStopVisits', 4);
+        params.set('DirectionRef', destinations[0]); // XXX TODO see how to handle multiple destinations, multiple fetch or filtering after?
+        params.set('MaximumStopVisits', 4);
     }
 
     fetch('/nsb-monitor/rtd?' + params.toString())

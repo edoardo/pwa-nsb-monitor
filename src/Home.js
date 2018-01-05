@@ -21,7 +21,7 @@ class Home extends Component {
                 id: 'NTH',
                 name: 'Nationaltheatret',
                 origins: ['Larvik','Kongsberg', 'Skien'],
-                destinations: ['Eidsvoll', 'Ski']
+                destinations: ['Eidsvoll']
             }]
         };
     }
