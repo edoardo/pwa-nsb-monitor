@@ -2,44 +2,52 @@ import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import SocialNotificationsActive from 'material-ui/svg-icons/social/notifications-active';
-import SocialNotificationsOff from 'material-ui/svg-icons/social/notifications-off';
 import SocialNotificationsNone from 'material-ui/svg-icons/social/notifications-none';
+import SocialNotificationsOff from 'material-ui/svg-icons/social/notifications-off';
+import SocialNotificationsPaused from 'material-ui/svg-icons/social/notifications-paused';
 
 class Header extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            notificationsState: Notification.permission
+            notificationsState: Notification.permission,
+            notificationsSnooze: false,
         };
     }
 
-    handleRightIconClick = () => {
-        const c = this;
+    toggleNotificationsSnooze = () => {
+        this.setState({ notificationsSnooze: !this.state.notificationsSnooze });
+    };
 
-        if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+    handleRightIconClick = () => {
+        const notificationsState = this.state.notificationsState;
+
+        if (notificationsState !== 'granted' && notificationsState !== 'denied') {
             Notification.requestPermission(permission => {
-                c.setState({
+                this.setState({
                     notificationsState: permission
                 });
             });
+        } else if (notificationsState === 'granted') {
+            this.toggleNotificationsSnooze();
         }
     };
 
     render() {
         let rightIconType;
-        let rightIconDisabled = true;
+        let rightIconDisabled = false;
 
         switch (this.state.notificationsState) {
             case 'granted':
-                rightIconType = <SocialNotificationsActive disabled={true} />;
+                rightIconType = this.state.notificationsSnooze ? <SocialNotificationsPaused /> : <SocialNotificationsActive />;
                 break;
             case 'denied':
                 rightIconType = <SocialNotificationsOff />;
+                rightIconDisabled = true;
                 break;
             default:
                 rightIconType = <SocialNotificationsNone />;
-                rightIconDisabled = false;
         }
 
         return (
