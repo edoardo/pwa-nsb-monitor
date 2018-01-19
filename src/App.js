@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { HashRouter as Router } from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -19,21 +19,17 @@ const muiTheme = getMuiTheme({
     }
 });
 
-class App extends Component {
-    render() {
-        return (
-            <MuiThemeProvider muiTheme={muiTheme}>
-                <Router
-                    basename="/nsb-monitor/"
-                >
-                    <div>
-                        <Header/>
-                        <Main/>
-                    </div>
-                </Router>
-            </MuiThemeProvider>
-        );
-    }
-}
+const App = () => (
+    <MuiThemeProvider muiTheme={muiTheme}>
+        <Router
+            basename="/nsb-monitor/"
+        >
+            <Fragment>
+                <Header/>
+                <Main/>
+            </Fragment>
+        </Router>
+    </MuiThemeProvider>
+);
 
 export default App;

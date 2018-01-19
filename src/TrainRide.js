@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import { ListItem } from 'material-ui/List';
 import AlertWarning from 'material-ui/svg-icons/alert/warning';

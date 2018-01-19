@@ -64,7 +64,7 @@ class TrainRides extends Component {
 
                 const monitoredCall = ride.querySelector('MonitoredCall');
 
-                [,
+                [
                     'VehicleAtStop',
                     'ArrivalStatus', 'DepartureStatus',
                     'AimedDepartureTime', 'ExpectedDepartureTime', 'DeparturePlatformName',
