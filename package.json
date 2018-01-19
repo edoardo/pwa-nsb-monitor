@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://beta.sabadelli.it/nsb-monitor",
   "dependencies": {
-    "material-ui": "^0.19.2",
+    "material-ui": "^0.19.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-scripts": "1.0.14"
