@@ -24,10 +24,14 @@ class Home extends Component {
                 destinations: ['Eidsvoll']
             }]
         };
+
+        // XXX
+        this.props.history.push(`/station/${this.state.stations[0].id}`);
     }
 
     handleChange = (value) => {
         this.setState({ selectedTab: value });
+        this.props.history.push(`/station/${value}`);
     };
 
     render() {

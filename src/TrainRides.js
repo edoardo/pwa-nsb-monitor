@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import { List } from 'material-ui/List';
@@ -9,7 +10,6 @@ class TrainRides extends Component {
     constructor(props) {
         super(props);
 
-        this.serviceWorker = navigator.serviceWorker;
         this.worker = new Worker('js/xml-worker.js');
         this.worker.addEventListener('message', e => {
             const message = JSON.parse(e.data);
@@ -89,7 +89,7 @@ class TrainRides extends Component {
 
         this.setState({ rides: convertedRides });
 
-        if (Notification.permission === 'granted') {
+        if (this.props.notificationsPermission === 'granted' && !this.props.notificationsPaused) {
             // XXX notification only for the next ride?!
             this.sendNotification({ id: this.props.stationId, name: this.props.stationName }, convertedRides[0]);
         }
@@ -124,7 +124,7 @@ class TrainRides extends Component {
             }
 
             if (requiresNotification) {
-                this.serviceWorker.getRegistration()
+                this.props.serviceWorker.getRegistration()
                     .then(reg => {
                         reg.showNotification(
                             title,
@@ -135,8 +135,13 @@ class TrainRides extends Component {
                                 tag: ride.ItemIdentifier,
                                 data: {
                                     stationId: station.id,
-                                    stationName: station.name
-                                }
+                                    stationName: station.name,
+                                    clientId: station.id,
+                                },
+                                actions: [
+                                    { action: 'pause', title: 'Pause' },
+                                    { action: 'snooze', title: 'Snooze' },
+                                ],
                             }
                         );
                     });
@@ -184,4 +189,11 @@ class TrainRides extends Component {
     }
 }
 
-export default TrainRides;
+export default connect(
+    state => ({
+        serviceWorker: state.app.serviceWorker,
+        notificationsPaused: state.notifications.paused,
+        notificationsPermission: state.notifications.permission,
+    }),
+    null
+)(TrainRides);
