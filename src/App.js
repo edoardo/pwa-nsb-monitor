@@ -7,7 +7,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Header from './Header';
 import Main from './Main';
 
-import { toggleNotificationsPaused } from './actions/notifications';
+import { toggleNotificationsPaused, setNotificationsSnoozeStartTime } from './actions/notifications';
 
 const muiTheme = getMuiTheme({
     palette: {
@@ -28,22 +28,18 @@ class App extends Component {
 
         const {
             serviceWorker,
-            snoozeTimeout,
             toggleNotificationsPaused,
+            setNotificationsSnoozeStartTime,
         } = this.props;
 
         serviceWorker.addEventListener('message', e => {
             const message = JSON.parse(e.data);
 
-            if (message.action === 'TOGGLE_NOTIFICATIONS') {
+            if (message.action === 'SNOOZE_NOTIFICATIONS') {
                 toggleNotificationsPaused();
+                setNotificationsSnoozeStartTime(Date.now());
             }
         });
-
-        serviceWorker.controller.postMessage(JSON.stringify({
-            action: 'SET_SNOOZE_TIMEOUT',
-            payload: snoozeTimeout
-        }));
     }
 
     render() {
@@ -63,9 +59,9 @@ class App extends Component {
 export default connect(
     state => ({
         serviceWorker: state.app.serviceWorker,
-        snoozeTimeout: state.notifications.snoozeTimeout,
     }),
     {
         toggleNotificationsPaused,
+        setNotificationsSnoozeStartTime,
     }
 )(App);

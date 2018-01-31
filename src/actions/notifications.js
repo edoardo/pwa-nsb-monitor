@@ -13,3 +13,8 @@ export const setNotificationsSnoozeTimeout = timeout => ({
     type: actionTypes.NOTIFICATIONS_SET_SNOOZE_TIMEOUT,
     payload: timeout
 });
+
+export const setNotificationsSnoozeStartTime = time => ({
+    type: actionTypes.NOTIFICATIONS_SET_SNOOZE_START_TIME,
+    payload: time
+});
