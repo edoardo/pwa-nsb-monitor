@@ -104,7 +104,7 @@ class TrainRides extends Component {
             toggleNotificationsPaused,
         } = this.props;
 
-        if (notificationsPaused && (notificationsSnoozeStartTime + notificationsSnoozeTimeout < Date.now())) {
+        if (notificationsPaused && notificationsSnoozeStartTime && (notificationsSnoozeStartTime + notificationsSnoozeTimeout < Date.now())) {
             toggleNotificationsPaused();
             setNotificationsSnoozeStartTime(0);
         }
