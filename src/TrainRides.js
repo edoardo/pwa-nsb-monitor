@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import { List } from 'material-ui/List';
 
 import TrainRide from './TrainRide';
 
+import { setNotificationsSnoozeStartTime, toggleNotificationsPaused } from './actions/notifications';
+
 class TrainRides extends Component {
     constructor(props) {
         super(props);
 
-        this.serviceWorker = navigator.serviceWorker;
         this.worker = new Worker('js/xml-worker.js');
         this.worker.addEventListener('message', e => {
             const message = JSON.parse(e.data);
 
             switch (message.action) {
-                case 'updateRealTime':
-                    console.log('updateRealTime message', message);
-                    const data = message.payload;
-                    this.setState({ rides: data });
-                    break;
                 case 'parseXMLResponse':
+                    // check if the snooze is still active
+                    this.verifyNotificationsSnooze();
+
                     const xml = message.payload;
                     this.parseResponse(xml);
                     break;
@@ -64,7 +64,7 @@ class TrainRides extends Component {
 
                 const monitoredCall = ride.querySelector('MonitoredCall');
 
-                [,
+                [
                     'VehicleAtStop',
                     'ArrivalStatus', 'DepartureStatus',
                     'AimedDepartureTime', 'ExpectedDepartureTime', 'DeparturePlatformName',
@@ -89,9 +89,24 @@ class TrainRides extends Component {
 
         this.setState({ rides: convertedRides });
 
-        if (Notification.permission === 'granted') {
+        if (this.props.notificationsPermission === 'granted' && !this.props.notificationsPaused) {
             // XXX notification only for the next ride?!
             this.sendNotification({ id: this.props.stationId, name: this.props.stationName }, convertedRides[0]);
+        }
+    };
+
+    verifyNotificationsSnooze = () => {
+        const {
+            notificationsPaused,
+            notificationsSnoozeStartTime,
+            notificationsSnoozeTimeout,
+            setNotificationsSnoozeStartTime,
+            toggleNotificationsPaused,
+        } = this.props;
+
+        if (notificationsPaused && notificationsSnoozeStartTime && (notificationsSnoozeStartTime + notificationsSnoozeTimeout < Date.now())) {
+            toggleNotificationsPaused();
+            setNotificationsSnoozeStartTime(0);
         }
     };
 
@@ -124,7 +139,7 @@ class TrainRides extends Component {
             }
 
             if (requiresNotification) {
-                this.serviceWorker.getRegistration()
+                this.props.serviceWorker.getRegistration()
                     .then(reg => {
                         reg.showNotification(
                             title,
@@ -135,8 +150,13 @@ class TrainRides extends Component {
                                 tag: ride.ItemIdentifier,
                                 data: {
                                     stationId: station.id,
-                                    stationName: station.name
-                                }
+                                    stationName: station.name,
+                                    clientId: station.id,
+                                },
+                                actions: [
+                                    { action: 'pause', title: 'Pause' },
+                                    { action: 'snooze', title: 'Snooze' },
+                                ],
                             }
                         );
                     });
@@ -184,4 +204,16 @@ class TrainRides extends Component {
     }
 }
 
-export default TrainRides;
+export default connect(
+    state => ({
+        serviceWorker: state.app.serviceWorker,
+        notificationsPaused: state.notifications.paused,
+        notificationsPermission: state.notifications.permission,
+        notificationsSnoozeStartTime: state.notifications.snoozeStartTime,
+        notificationsSnoozeTimeout: state.notifications.snoozeTimeout,
+    }),
+    {
+        setNotificationsSnoozeStartTime,
+        toggleNotificationsPaused,
+    }
+)(TrainRides);

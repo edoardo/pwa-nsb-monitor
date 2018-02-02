@@ -1,4 +1,4 @@
-const fetchRealTimeData = async (payload) => {
+const fetchRealTimeData = (payload) => {
     const { stationId, stationName, origins, destinations } = payload;
 
     const params = new URLSearchParams();

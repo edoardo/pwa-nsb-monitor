@@ -1,64 +1,81 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
+
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import SocialNotificationsActive from 'material-ui/svg-icons/social/notifications-active';
-import SocialNotificationsOff from 'material-ui/svg-icons/social/notifications-off';
 import SocialNotificationsNone from 'material-ui/svg-icons/social/notifications-none';
+import SocialNotificationsOff from 'material-ui/svg-icons/social/notifications-off';
+import SocialNotificationsPaused from 'material-ui/svg-icons/social/notifications-paused';
 
-class Header extends Component {
-    constructor(props) {
-        super(props);
+import { toggleNotificationsPaused, setNotificationsPermission } from './actions/notifications';
 
-        this.state = {
-            notificationsState: Notification.permission
-        };
-    }
+const Header = props => {
+    const {
+        serviceWorker,
+        notificationsPermission,
+        notificationsPaused,
+        setNotificationsPermission,
+        toggleNotificationsPaused,
+    } = props;
 
-    handleRightIconClick = () => {
-        const c = this;
-
-        if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+    const handleRightIconClick = () => {
+        if (notificationsPermission !== 'granted' && notificationsPermission !== 'denied') {
             Notification.requestPermission(permission => {
-                c.setState({
-                    notificationsState: permission
-                });
+                setNotificationsPermission(permission);
             });
+        } else if (notificationsPermission === 'granted') {
+            if (notificationsPaused) {
+                serviceWorker.controller.postMessage(JSON.stringify({
+                    action: 'CLEAR_SNOOZE_TIMEOUT'
+                }));
+            }
+
+            toggleNotificationsPaused();
         }
     };
 
-    render() {
-        let rightIconType;
-        let rightIconDisabled = true;
+    let rightIconType;
+    let rightIconDisabled = false;
 
-        switch (this.state.notificationsState) {
-            case 'granted':
-                rightIconType = <SocialNotificationsActive disabled={true} />;
-                break;
-            case 'denied':
-                rightIconType = <SocialNotificationsOff />;
-                break;
-            default:
-                rightIconType = <SocialNotificationsNone />;
-                rightIconDisabled = false;
-        }
-
-        return (
-            <header>
-            <AppBar
-                title="NSB real time monitor"
-                showMenuIconButton={false} // TODO implement settings here!
-                iconElementRight={
-                    <IconButton
-                        disabled={rightIconDisabled}
-                    >
-                        {rightIconType}
-                    </IconButton>
-                }
-                onRightIconButtonTouchTap={this.handleRightIconClick}
-            />
-            </header>
-        );
+    switch (notificationsPermission) {
+        case 'granted':
+            rightIconType = notificationsPaused ? <SocialNotificationsPaused /> : <SocialNotificationsActive />;
+            break;
+        case 'denied':
+            rightIconType = <SocialNotificationsOff />;
+            rightIconDisabled = true;
+            break;
+        default:
+            rightIconType = <SocialNotificationsNone />;
     }
-}
 
-export default Header;
+    return (
+        <header>
+        <AppBar
+            title="NSB real time monitor"
+            showMenuIconButton={false} // TODO implement settings here!
+            iconElementRight={
+                <IconButton
+                    disabled={rightIconDisabled}
+                >
+                    {rightIconType}
+                </IconButton>
+            }
+            onRightIconButtonTouchTap={handleRightIconClick}
+        />
+        </header>
+    );
+};
+
+export default connect(
+    state => ({
+        serviceWorker: state.app.serviceWorker,
+        notificationsPaused: state.notifications.paused,
+        notificationsPermission: state.notifications.permission,
+    }),
+    {
+        toggleNotificationsPaused,
+        setNotificationsPermission,
+    }
+)(Header);
